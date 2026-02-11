@@ -461,6 +461,9 @@ def admin_panel():
 
         elif action == "end":
             feedback_active = False
+            start_time = "Not Started"
+            end_time = "Not Ended"
+
             end_time = datetime.now()
             flash("Feedback Ended")
 
