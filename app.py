@@ -91,14 +91,22 @@ def update_summary():
         "Not Cleaned Well": 0
     }
 
-    total_feedback = len(data_rows)
+    total_feedback = 0
     total_score = 0
 
     for row in data_rows:
-        if len(row) >= 4:
-            meal = row[0]
-            rating = row[1]
+        if len(row) >= 3:
+            meal = row[0].strip()
+            rating = row[1].strip()
             issues = row[2]
+
+            # Skip invalid meal or rating
+            if meal not in meals:
+                continue
+            if rating not in rating_types:
+                continue
+
+            total_feedback += 1
 
             overall_rating_count[rating] += 1
             meal_rating_count[meal][rating] += 1
@@ -126,6 +134,7 @@ def update_summary():
     sheet.update('B16', [[issue_count["Not Cooked Well"]]])
     sheet.update('B17', [[issue_count["Less Side Dishes"]]])
     sheet.update('B18', [[issue_count["Not Cleaned Well"]]])
+
 
 # ---------------- STUDENT PAGE ---------------- #
 
