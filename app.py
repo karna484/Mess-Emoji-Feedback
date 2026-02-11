@@ -4,18 +4,23 @@ from oauth2client.service_account import ServiceAccountCredentials
 from datetime import datetime
 from openpyxl import Workbook
 import os
+import json
+from google.oauth2.service_account import Credentials
 
 app = Flask(__name__)
 app.secret_key = "supersecretkey"
 
 # ---------------- GOOGLE SHEETS SETUP ---------------- #
 
+creds_dict = json.loads(os.environ["GOOGLE_CREDENTIALS"])
+
 scope = [
     "https://www.googleapis.com/auth/spreadsheets",
     "https://www.googleapis.com/auth/drive"
 ]
 
-creds = ServiceAccountCredentials.from_json_keyfile_name("credentials.json", scope)
+creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
+
 client = gspread.authorize(creds)
 
 SPREADSHEET_NAME = "Mess Emoji Feedback"
