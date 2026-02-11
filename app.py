@@ -429,7 +429,7 @@ def submit():
     return redirect(url_for('index'))
 
 # ---------------- ADMIN ---------------- #
-@app.route('/admin-login', methods=['GET', 'POST'])
+@app.route('/admin', methods=['GET', 'POST'])
 def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
@@ -437,13 +437,14 @@ def admin_login():
 
         if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session['admin_logged_in'] = True
-            return redirect(url_for('admin'))
+            return redirect(url_for('admin_panel'))
         else:
             flash("Invalid Username or Password")
 
     return render_template('admin_login.html')
-@app.route('/admin', methods=['GET', 'POST'])
-def admin():
+
+@app.route('/admin-panel', methods=['GET', 'POST'])
+def admin_panel():
 
     if not session.get('admin_logged_in'):
         return redirect(url_for('admin_login'))
@@ -469,6 +470,7 @@ def admin():
         start=start_time,
         end=end_time
     )
+
 @app.route('/logout')
 def logout():
     session.pop('admin_logged_in', None)
