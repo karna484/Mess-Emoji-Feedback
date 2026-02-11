@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Panel</title>
+    <style>
+        body { font-family: Arial; text-align: center; padding-top: 50px; }
+        button { padding: 15px 25px; font-size: 18px; margin: 10px; border: none; cursor: pointer; border-radius: 10px; }
+        .start { background: green; color: white; }
+        .end { background: orange; color: white; }
+        .reset { background: red; color: white; }
+    </style>
+</head>
+<body>
+
+<h2>Admin Panel</h2>
+
+<p>Feedback Active: {{ 'Yes' if active else 'No' }}</p>
+
+{% if start %}
+<p>Started at: {{ start }}</p>
+{% endif %}
+
+{% if end %}
+<p>Ended at: {{ end }}</p>
+{% endif %}
+
+<form method="post">
+    <button type="submit" name="action" value="start" class="start">Start Feedback</button>
+    <button type="submit" name="action" value="end" class="end">End Feedback</button>
+</form>
+
+<form action="/reset" method="post">
+    <button type="submit" class="reset">Reset Feedback</button>
+</form>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <ul>
+      {% for message in messages %}
+        <li>{{ message }}</li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endwith %}
+
+</body>
+</html>
