@@ -265,6 +265,8 @@ scope = [
 creds = Credentials.from_service_account_info(creds_dict, scopes=scope)
 
 client = gspread.authorize(creds)
+ADMIN_USERNAME = "admin"
+ADMIN_PASSWORD = "mess123"
 
 SPREADSHEET_NAME = "Mess Emoji Feedback"
 spreadsheet = client.open(SPREADSHEET_NAME)
@@ -433,16 +435,13 @@ def admin_login():
         username = request.form.get('username')
         password = request.form.get('password')
 
-        if (username == os.environ.get("ADMIN_USERNAME") and
-            password == os.environ.get("ADMIN_PASSWORD")):
-
+        if username == ADMIN_USERNAME and password == ADMIN_PASSWORD:
             session['admin_logged_in'] = True
             return redirect(url_for('admin'))
         else:
             flash("Invalid Username or Password")
 
     return render_template('admin_login.html')
-
 @app.route('/admin', methods=['GET', 'POST'])
 def admin():
 
@@ -457,12 +456,12 @@ def admin():
         if action == "start":
             feedback_active = True
             start_time = datetime.now()
-            flash(f"Feedback started at {start_time}")
+            flash("Feedback Started")
 
         elif action == "end":
             feedback_active = False
             end_time = datetime.now()
-            flash(f"Feedback ended at {end_time}")
+            flash("Feedback Ended")
 
     return render_template(
         'admin.html',
@@ -474,6 +473,7 @@ def admin():
 def logout():
     session.pop('admin_logged_in', None)
     return redirect(url_for('admin_login'))
+
 
 
 # ---------------- RESET WITH BACKUP ---------------- #
