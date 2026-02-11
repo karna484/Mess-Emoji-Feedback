@@ -32,6 +32,11 @@
 <form action="/reset" method="post">
     <button type="submit" class="reset">Reset Feedback</button>
 </form>
+<br><br>
+<a href="/logout">
+    <button style="background:black;color:white;">Logout</button>
+</a>
+
 
 {% with messages = get_flashed_messages() %}
   {% if messages %}
