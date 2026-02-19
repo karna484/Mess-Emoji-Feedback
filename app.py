@@ -485,26 +485,44 @@ def logout():
 @app.route('/reset', methods=['POST'])
 def reset():
 
-    if not os.path.exists("backups"):
-        os.makedirs("backups")
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
 
-    backup_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    filename = f"backups/backup_{backup_time}.xlsx"
+    global feedback_active, start_time, end_time
 
-    all_data = sheet.get_all_values()
+    try:
+        # Create backup folder if not exists
+        if not os.path.exists("backups"):
+            os.makedirs("backups")
 
-    wb = Workbook()
-    ws = wb.active
+        backup_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        filename = f"backups/backup_{backup_time}.xlsx"
 
-    for row in all_data:
-        ws.append(row)
+        # Get all sheet data
+        all_data = sheet.get_all_values()
 
-    wb.save(filename)
+        # Save backup file
+        wb = Workbook()
+        ws = wb.active
 
-    sheet.clear()
-    initialize_sheet()
+        for row in all_data:
+            ws.append(row)
 
-    flash("Backup saved & Sheet Reset Successfully")
+        wb.save(filename)
+
+        # Reset sheet
+        sheet.clear()
+        initialize_sheet()
+
+        # Reset variables
+        feedback_active = False
+        start_time = "Not Started"
+        end_time = "Not Ended"
+
+        flash("Backup saved & Sheet Reset Successfully")
+
+    except Exception as e:
+        flash(f"Error: {str(e)}")
 
     return redirect(url_for('admin'))
 
