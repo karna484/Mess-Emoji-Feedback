@@ -282,8 +282,8 @@ def initialize_sheet():
     sheet.clear()
 
     # Start & End Time
-    sheet.update('A1', [["Feedback Start Time", "Feedback End Time"]])
-    sheet.update('A2', [["Not Started", "Not Ended"]])
+    sheet.update('A1', [["Feedback Start Time", "Feedback End Time","Last Reset Time"]])
+    sheet.update('A2', [["Not Started", "Not Ended","Not Ended"]])
 
     # Overall Summary
     sheet.update('A3', [["Total Feedback", "Average Rating"]])
@@ -525,17 +525,14 @@ def reset():
     global feedback_active, start_time, end_time
 
     try:
-        # Create backup folder if not exists
         if not os.path.exists("backups"):
             os.makedirs("backups")
 
         backup_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"backups/backup_{backup_time}.xlsx"
 
-        # Get all sheet data
         all_data = sheet.get_all_values()
 
-        # Save backup file
         wb = Workbook()
         ws = wb.active
 
@@ -544,14 +541,17 @@ def reset():
 
         wb.save(filename)
 
-        # Reset sheet
-        sheet.clear()
-        initialize_sheet()
-
-        # Reset variables
+        # ✅ Reset values
         feedback_active = False
         start_time = "Not Started"
         end_time = "Not Ended"
+        reset_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+        sheet.clear()
+        initialize_sheet()
+
+        # ✅ Update reset time in sheet
+        sheet.update('A2', [[start_time, end_time, reset_time]])
 
         flash("Backup saved & Sheet Reset Successfully")
 
@@ -559,6 +559,7 @@ def reset():
         flash(f"Error: {str(e)}")
 
     return redirect(url_for('admin'))
+
 
 # ---------------- RUN ---------------- #
 
