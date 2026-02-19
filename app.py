@@ -432,6 +432,40 @@ def submit():
 
 # ---------------- ADMIN ---------------- #
 @app.route('/admin', methods=['GET', 'POST'])
+def admin():
+
+    if not session.get('admin_logged_in'):
+        return redirect(url_for('admin_login'))
+
+    global feedback_active, start_time, end_time
+
+    if request.method == 'POST':
+        action = request.form['action']
+
+        if action == "start":
+            feedback_active = True
+            start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # ✅ Update sheet start time
+            sheet.update('A2', [[start_time, end_time]])
+
+            flash("Feedback Started")
+
+        elif action == "end":
+            feedback_active = False
+            end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+
+            # ✅ Update sheet end time
+            sheet.update('A2', [[start_time, end_time]])
+
+            flash("Feedback Ended")
+
+    return render_template(
+        'admin.html',
+        active=feedback_active,
+        start=start_time,
+        end=end_time
+    )
 def admin_login():
     if request.method == 'POST':
         username = request.form.get('username')
