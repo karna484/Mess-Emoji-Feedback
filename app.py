@@ -247,7 +247,8 @@ from openpyxl import Workbook
 import os
 import json
 from google.oauth2.service_account import Credentials
-import pytz
+from zoneinfo import ZoneInfo
+
 
 
 
@@ -446,7 +447,7 @@ def admin():
 
         if action == "start":
             feedback_active = True
-            start_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            start_time = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
 
             # ✅ Update sheet start time
             sheet.update('A2', [[start_time, end_time]])
@@ -455,7 +456,7 @@ def admin():
 
         elif action == "end":
             feedback_active = False
-            end_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            end_time = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
 
             # ✅ Update sheet end time
             sheet.update('A2', [[start_time, end_time]])
@@ -530,7 +531,7 @@ def reset():
         if not os.path.exists("backups"):
             os.makedirs("backups")
 
-        backup_time = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+        backup_time = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d_%H-%M-%S")
         filename = f"backups/backup_{backup_time}.xlsx"
 
         all_data = sheet.get_all_values()
@@ -547,7 +548,7 @@ def reset():
         feedback_active = False
         start_time = "Not Started"
         end_time = "Not Ended"
-        reset_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        reset_time = datetime.now(ZoneInfo("Asia/Kolkata")).strftime("%Y-%m-%d %H:%M:%S")
 
         sheet.clear()
         initialize_sheet()
